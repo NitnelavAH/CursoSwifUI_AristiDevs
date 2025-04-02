@@ -30,12 +30,32 @@ struct ButtonExample: View {
         }, label: {
             Image("swift")
                 .resizable()
-                .frame(width: 100)
+                .frame(width: 100,height: 100)
                 .scaledToFit()
+        })
+    }
+}
+
+struct Counter: View {
+    @State private var count = 0
+    var body: some View {
+        Button(action: {
+            print("Counter \(count)")
+            count += 1
+        }, label: {
+            Text("Counter \(count)")
+                .frame(width: 150)
+                .padding()
+                .foregroundStyle(.yellow)
+                .background(.black)
+                .bold()
+                .font(.title)
+                .cornerRadius(10)
         })
     }
 }
 
 #Preview {
     ButtonExample()
+    Counter()
 }
