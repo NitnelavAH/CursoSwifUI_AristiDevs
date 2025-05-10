@@ -16,9 +16,12 @@ struct MenuView: View {
                     Text("IMC Calculator")
                         .padding()
                 }
+                NavigationLink(destination: SuperHeroSearcher()) {
+                    Text("SuperHero Finder")
+                        .padding()
+                }
                 
-                Text("APP 2")
-                Text("APP 3")
+                
             }
         }
     }
