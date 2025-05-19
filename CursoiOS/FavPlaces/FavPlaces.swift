@@ -28,6 +28,9 @@ struct FavPlaces: View {
     @State var showPopUp: CLLocationCoordinate2D? = nil
     @State var name: String = ""
     @State var fav: Bool = false
+    @State var showSheet = false
+    
+    let height = stride(from: 0.3, through: 0.3, by: 0.1).map{ PresentationDetent.fraction($0)}
 
     
     var body: some View {
@@ -60,6 +63,19 @@ struct FavPlaces: View {
                             showPopUp = coordinates
                         }
                     }
+                    .overlay {
+                        VStack {
+                            Button("Show List") {
+                                showSheet = true
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(.white)
+                            .cornerRadius(16)
+                            .padding(16)
+                            Spacer()
+                        }
+                    }
             }
             
             if showPopUp != nil {
@@ -67,10 +83,12 @@ struct FavPlaces: View {
                     Text("Añadir localización")
                         .font(.title2)
                         .bold()
+                        .foregroundStyle(.black)
                     Spacer()
                     TextField("Nombre", text: $name)
                         .padding(.bottom, 8)
-                    Toggle("Es favorito?", isOn: $fav)
+                        .foregroundStyle(.backgroundApp)
+                    Toggle("Es favorito?", isOn: $fav).foregroundStyle(.backgroundApp)
                     Spacer()
                     Button("Guardar") {
                         
@@ -100,6 +118,37 @@ struct FavPlaces: View {
                 }
             }
             
+        }.sheet(isPresented: $showSheet) {
+            ScrollView(.horizontal) {
+                LazyHStack {
+                    
+                    ForEach(places) { place in
+                        
+                        let color = if place.fav {
+                            Color.yellow
+                        } else {
+                            Color.black
+                        }
+                        
+                        VStack {
+                            Text(place.name)
+                        }
+                        .frame(width: 150, height: 100)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(color.opacity(0.5), lineWidth: 1)
+                        }.shadow(radius: 5)
+                        .padding(.horizontal, 8)
+                        .onTapGesture {
+                            animateCamera(coordinate: place.coordinates)
+                            showSheet = false
+                        }
+                        
+                    }
+                }
+            }.presentationDetents(Set(height))
+        }.onAppear {
+            loadPlaces()
         }
     }
     
@@ -110,6 +159,7 @@ struct FavPlaces: View {
                 fav: fav
             )
         places.append(place)
+        savePlaces()
     }
     
     func clearForm() {
@@ -117,8 +167,36 @@ struct FavPlaces: View {
         name = ""
         fav = false
     }
+    
+    func animateCamera(coordinate: CLLocationCoordinate2D) {
+        withAnimation {
+            position = MapCameraPosition.region(
+                MKCoordinateRegion(
+                    center: coordinate,
+                    span: MKCoordinateSpan(
+                        latitudeDelta: 1,
+                        longitudeDelta: 1
+                    )
+                )
+            )
+        }
+    }
 }
 
 #Preview {
     FavPlaces()
+}
+
+extension FavPlaces {
+    func savePlaces() {
+        if let encodeData = try? JSONEncoder().encode(places) {
+            UserDefaults.standard.set(encodeData, forKey: "places")
+        }
+    }
+    
+    func loadPlaces() {
+        if let decodeData = UserDefaults.standard.data(forKey: "places") {
+            places = try! JSONDecoder().decode([Place].self, from: decodeData)
+        }
+    }
 }
