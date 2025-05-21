@@ -12,6 +12,14 @@ struct MenuView: View {
         NavigationStack {
             List {
         
+                NavigationLink(destination: Stacks()) {
+                    Text("Stacks")
+                        .padding()
+                }
+                NavigationLink(destination: Navigations()) {
+                    Text("Navigation")
+                        .padding()
+                }
                 NavigationLink(destination: IMCView()) {
                     Text("IMC Calculator")
                         .padding()
