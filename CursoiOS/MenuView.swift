@@ -20,6 +20,18 @@ struct MenuView: View {
                     Text("Navigation")
                         .padding()
                 }
+                NavigationLink(destination: Lists()) {
+                    Text("Lists")
+                        .padding()
+                }
+                NavigationLink(destination: Grids()) {
+                    Text("Grids")
+                        .padding()
+                }
+                NavigationLink(destination: StateExample()) {
+                    Text("States")
+                        .padding()
+                }
                 NavigationLink(destination: IMCView()) {
                     Text("IMC Calculator")
                         .padding()
