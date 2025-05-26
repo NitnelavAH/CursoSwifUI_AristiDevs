@@ -13,6 +13,8 @@ struct CursoiOSApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Environment(\.scenePhase) var scenePhase
     
+    var modeloCombine = ModeloCombine()
+    
     init(){
         inicio()
     }
@@ -20,7 +22,10 @@ struct CursoiOSApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView().preferredColorScheme(.dark)
+            ContentView()
+                .preferredColorScheme(.dark)
+            //Se inyectan las variables del modelo en todas las vistas hijas
+                .environmentObject(modeloCombine)
         }.onChange(of: scenePhase) { oldPhase, newPhase in
             switch newPhase {
             case .active:

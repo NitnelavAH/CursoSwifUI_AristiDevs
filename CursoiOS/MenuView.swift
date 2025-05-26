@@ -32,6 +32,14 @@ struct MenuView: View {
                     Text("States")
                         .padding()
                 }
+                NavigationLink(destination: CombineExample()) {
+                    Text("Combine Example")
+                        .padding()
+                }
+                NavigationLink(destination: UserDefaultExample()) {
+                    Text("User Default Example")
+                        .padding()
+                }
                 NavigationLink(destination: IMCView()) {
                     Text("IMC Calculator")
                         .padding()
